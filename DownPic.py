@@ -61,7 +61,7 @@ def request_html():
         else: #if failed
             result_st.insert('end', "request failed\n...\n")
         result_st.insert('end', "=" * 50 + "\n...\n")
-        result_st.insert('end', requests1.text)
+        #result_st.insert('end', requests1.text)
         result_st.configure(state='disabled')
     except:
         result_st.configure(state='normal')
@@ -76,16 +76,19 @@ button_request.place(x=480, y=30, width=100, height=24)
 def start_download():
     result_st.configure(state='normal')
     result_st.insert('end', "finding img\n...\n")
-    soup=BeautifulSoup(requests1.text,"lxml") #html.parser, html5lib, lxml is faster
+    soup=BeautifulSoup(requests1.text,"lxml") #html.parser, html5lib, lxml, lxml is faster
     image=soup.find_all("div")
-    links=[]
+    img_url = [] #download url list
+    img_url_dic = {} #prevent download twice
     for d in image:
         if d.find('img'):        #再從div找img裡面的src  
             result=d.find('img')['src']
-            #print(result)
-            links.append(result)
+            if not result in img_url_dic:
+                result_st.insert('end', "find img : " + result + "\n")
+                img_url.append(result)
+                img_url_dic[result]=1
     x=1
-    for link in links:
+    for link in img_url:
         local = os.path.join(file_location.get() + "/" + str(x) + ".jpg")
         result_st.insert('end', "Downloading pic to : \"" + file_location.get() + "/" + str(x) + ".jpg\"\n")
         urlretrieve(link,local) #link是下載的網址 local是儲存圖片的檔案位址
