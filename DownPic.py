@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import scrolledtext
-
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 import requests
 from bs4 import BeautifulSoup
 import lxml
@@ -13,6 +14,13 @@ import sys
 mainpage=tk.Tk()
 mainpage.title("DownPic")
 mainpage.geometry("800x600")
+
+option = Options()
+option.binary_location = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+webdriver_path = 'D:\\ChromeWebDriver\\chromedriver.exe'
+browser1 = webdriver.Chrome(executable_path=webdriver_path, options=option)
+browser1.get("https://www.google.com/")
+browser1.close()
 
 #===========================================basic layout===========================================
 #label url
@@ -93,8 +101,8 @@ def start_download():
         result_st.insert('end', "Downloading pic to : \"" + file_location.get() + "/" + str(x) + ".jpg\"\n")
         urlretrieve(link,local) #link是下載的網址 local是儲存圖片的檔案位址
         x+=1
-        if x>3:
-            break
+        #if x>3:
+        #    break
     result_st.insert('end', "\nsuccessfully download " + str(x-1) + " pictures\n...\n")
     result_st.insert('end', "=" * 50 + "\n\n")
     result_st.configure(state='disabled')
