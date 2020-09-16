@@ -2,25 +2,16 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import scrolledtext
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-import requests
 from bs4 import BeautifulSoup
-import lxml
 import os
-from urllib.request import urlretrieve
-import sys
+import time
 
 #main page info
 mainpage=tk.Tk()
 mainpage.title("DownPic")
 mainpage.geometry("800x600")
 
-option = Options()
-option.binary_location = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
-webdriver_path = 'D:\\ChromeWebDriver\\chromedriver.exe'
-browser1 = webdriver.Chrome(executable_path=webdriver_path, options=option)
-browser1.get("https://www.google.com/")
-browser1.close()
+webdriver_path = 'D:\\Drivers\\chromedriver.exe'
 
 #===========================================basic layout===========================================
 #label url
@@ -58,28 +49,16 @@ button_file.place(x=400, y=70, width=30, height=24)
 
 #request
 def request_html():
-    #requests
-    try:
-        global requests1
-        requests1 = requests.get(url.get())
-        result_st.configure(state='normal')
-        result_st.insert('end', "request status code = " + str(requests1.status_code) + "\n...\n")
-        if requests1.status_code == 200: #if success
-            result_st.insert('end', "request successed\n...\n")
-        else: #if failed
-            result_st.insert('end', "request failed\n...\n")
-        result_st.insert('end', "=" * 50 + "\n...\n")
-        #result_st.insert('end', requests1.text)
-        result_st.configure(state='disabled')
-    except:
-        result_st.configure(state='normal')
-        result_st.insert('end', "request failed, is url empty?\n...\n")
-        result_st.configure(state='disabled')
-    
+    #open driver
+    driver1 = webdriver.Chrome(executable_path=webdriver_path)
+    driver1.get(url.get())
+    #time.sleep(5)
+    #driver1.find_element_by_xpath("//*[@id=\"content\"]/div/button").click()
+
 #request button
 button_request=tk.Button(mainpage, text="request", relief="raised", command=request_html)
 button_request.place(x=480, y=30, width=100, height=24)
-
+"""
 #download
 def start_download():
     result_st.configure(state='normal')
@@ -109,7 +88,8 @@ def start_download():
 #download button
 button_down=tk.Button(mainpage, text="Start Download", relief="raised", command=start_download)
 button_down.place(x=480, y=70, width=100, height=24)
+"""
 #========================================button & function========================================
 
-mainpage.mainloop()
+#mainpage.mainloop()
 
