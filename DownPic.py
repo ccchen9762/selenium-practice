@@ -3,6 +3,7 @@ import tkinter.font as tkFont
 from tkinter import filedialog
 from tkinter import scrolledtext
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
 import os
 import time
@@ -11,7 +12,7 @@ import re #regular expression
 #color info
 bg_deep = "#4F4F4F"
 bg_middle = "#6C6C6C"
-bg_light = "#8E8E8E"
+bg_light = "#7B7B7B"
 bg_highlight = "#C4E1FF"
 fg_deep = "#FCFCFC"
 
@@ -40,6 +41,7 @@ label_url.place(x=position_x, y=position_y, width=150, height=24)
 url=tk.StringVar()
 entry_url=tk.Entry(mainpage, textvariable=url, bg=bg_light, fg=fg_deep, font=word_font_config)
 entry_url.place(x=position_x+space_x, y=position_y, width=180, height=24)
+entry_url.insert(0, "https://www.twitch.tv/")
 
 #label file location
 label_file_location=tk.Label(mainpage, text="Choose save location  ", anchor="e", bg=bg_deep, fg=fg_deep, font=label_font_config)
@@ -48,7 +50,7 @@ label_file_location.place(x=position_x, y=position_y+space_y, width=150, height=
 file_location=tk.StringVar()
 entry_file_location=tk.Entry(mainpage, textvariable=file_location, bg=bg_light, fg=fg_deep, font=word_font_config)
 entry_file_location.place(x=position_x+space_x, y=position_y+space_y, width=150, height=24)
-
+"""
 #label account
 label_account=tk.Label(mainpage, text="Account  ", anchor="e", bg=bg_deep, fg=fg_deep, font=label_font_config)
 label_account.place(x=position_x, y=position_y+space_y*2, width=150, height=24)
@@ -64,7 +66,7 @@ label_password.place(x=position_x, y=position_y+space_y*3, width=150, height=24)
 password=tk.StringVar()
 entry_password=tk.Entry(mainpage, show="*", textvariable=password, bg=bg_light, fg=fg_deep, font=word_font_config)
 entry_password.place(x=position_x+space_x, y=position_y+space_y*3, width=180, height=24)
-
+"""
 #lanel result
 label_result=tk.Label(mainpage, text="Log :", bg=bg_deep, fg=fg_deep, font=label_font_config)
 label_result.place(x=position_x, y=position_y+space_y*4, height=30)
@@ -84,36 +86,85 @@ def on_leave(event, event_button):
     event_button['background'] = bg_middle
     event_button["foreground"] = fg_deep
 
+
 #filedialog
 def search_file():
     file_location.set(filedialog.askdirectory())
 #filedialog button
-button_file=tk.Button(mainpage, text="...", relief="flat", command=search_file, bg=bg_middle, fg=fg_deep, font=label_font_config)
+#relief="flat"
+button_file=tk.Button(mainpage, text="...", command=search_file, bg=bg_middle, fg=fg_deep, font=label_font_config)
 button_file.bind("<Enter>", lambda event: on_enter(event, button_file))
 button_file.bind("<Leave>", lambda event: on_leave(event, button_file))
 button_file.place(x=position_x+space_x*2, y=position_y+space_y, width=30, height=24)
+
 
 #open driver
 def open_driver():
     if re.match("http[s]?://([a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(%[0-9a-fA-F][0-9a-fA-F]))+", url.get()):
         result_st.configure(state='normal')
-        result_st.insert('end', "Connecting "+url.get()+"\n\n")
+        result_st.insert('end', "Connecting \""+url.get()+"\"\n\n")
         #open driver
         driver1 = webdriver.Chrome(executable_path=webdriver_path)
         driver1.get(url.get())
-        result_st.insert('end', "\nsuccessfully open web driver\n\n")
+        result_st.insert('end', "successfully open web driver\n\n")
         result_st.configure(state='disabled')
-        time.sleep(5)
-        #do something like below
-        driver1.find_element_by_xpath("//*[@id=\"content\"]/div/button").click()
-        time.sleep(5)
-        driver1.close()
+        time.sleep(1)
+        #click login button
+        driver1.find_element_by_xpath("//*[@id=\"root\"]/div/div[2]/nav/div/div[3]/div[3]/div/div[1]/div[1]/button").click()
+        time.sleep(1)
+        account_element = driver1.find_element_by_xpath("//*[@id=\"login-username\"]")
+        password_element = driver1.find_element_by_xpath("//*[@id=\"password-input\"]")
+        #================================================start of login page================================================
+        #config
+        login_page=tk.Toplevel(mainpage)
+        login_page.title("Login")
+        login_page.geometry("360x160+900+400")
+        login_page.configure(bg=bg_deep)
+        login_page.resizable(False, False)
+        #parameter
+        login_pos_x=20
+        login_pos_y=20
+        #label account
+        label_account=tk.Label(login_page, text="Account  ", anchor="e", bg=bg_deep, fg=fg_deep, font=label_font_config)
+        label_account.place(x=login_pos_x, y=login_pos_y, width=100, height=24)
+        #entry account
+        account=tk.StringVar()
+        entry_account=tk.Entry(login_page, textvariable=account, bg=bg_light, fg=fg_deep, font=word_font_config)
+        entry_account.place(x=login_pos_x+120, y=login_pos_y, width=180, height=24)
+        #label password
+        label_password=tk.Label(login_page, text="Password  ", anchor="e", bg=bg_deep, fg=fg_deep, font=label_font_config)
+        label_password.place(x=login_pos_x, y=login_pos_y+space_y, width=100, height=24)
+        #entry password
+        password=tk.StringVar()
+        entry_password=tk.Entry(login_page, show="*", textvariable=password, bg=bg_light, fg=fg_deep, font=word_font_config)
+        entry_password.place(x=login_pos_x+120, y=login_pos_y+space_y, width=180, height=24)
+        #=================================================button=================================================
+        #login
+        def login_func():
+            account_input=account.get()
+            password_input=password.get()
+            account_element.send_keys(account_input)    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            password_element.send_keys(password_input)  #use send_keys instead of sendkey for webelements
+            result_st.configure(state='normal')
+            result_st.insert('end', "username/password sent\n\n")
+            result_st.configure(state='disabled')
+            time.sleep(1)
+            driver1.find_element_by_xpath("/html/body/div[3]/div/div/div/div/div/div[1]/div/div/div[3]/form/div/div[3]/button").click()
+            login_page.destroy()
+        #login button
+        button_file=tk.Button(login_page, text="Login", command=login_func, bg=bg_middle, fg=fg_deep, font=label_font_config)
+        button_file.bind("<Enter>", lambda event: on_enter(event, button_file))
+        button_file.bind("<Leave>", lambda event: on_leave(event, button_file))
+        button_file.place(x=login_pos_x+140, y=login_pos_y+space_y*2+10, width=60, height=24)
+        #================================================end of login page================================================
+        #driver1.close()
     else:
         result_st.configure(state='normal')
         result_st.insert('end', "Invalid url, remember to include http(s)\n\n")
         result_st.configure(state='disabled')
+
 #open driver button
-button_open_driver=tk.Button(mainpage, text="open driver", relief="flat", command=open_driver, bg=bg_middle, fg=fg_deep, font=label_font_config)
+button_open_driver=tk.Button(mainpage, text="open driver", command=open_driver, bg=bg_middle, fg=fg_deep, font=label_font_config)
 button_open_driver.bind("<Enter>", lambda event: on_enter(event, button_open_driver))
 button_open_driver.bind("<Leave>", lambda event: on_leave(event, button_open_driver))
 button_open_driver.place(x=540, y=30, width=120, height=50)
@@ -125,11 +176,10 @@ def start_download():
     result_st.insert('end', "=" * 50 + "\n\n")
     result_st.configure(state='disabled')
 #download button
-button_down=tk.Button(mainpage, text="Start Download", relief="flat", command=start_download, bg=bg_middle, fg=fg_deep, font=label_font_config)
+button_down=tk.Button(mainpage, text="Start Download", command=start_download, bg=bg_middle, fg=fg_deep, font=label_font_config)
 button_down.bind("<Enter>", lambda event: on_enter(event, button_down))
 button_down.bind("<Leave>", lambda event: on_leave(event, button_down))
 button_down.place(x=540, y=100, width=120, height=50)
 
 #========================================button & function========================================
-
 mainpage.mainloop()
