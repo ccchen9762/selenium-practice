@@ -18,8 +18,9 @@ fg_deep = "#FCFCFC"
 #main page info
 mainpage=tk.Tk()
 mainpage.title("DownPic")
-mainpage.geometry("800x600")
+mainpage.geometry("800x600+640+160")
 mainpage.configure(bg=bg_deep)
+mainpage.resizable(False, False)
 
 webdriver_path = 'D:\\Drivers\\chromedriver.exe'
 
@@ -65,7 +66,7 @@ entry_password=tk.Entry(mainpage, show="*", textvariable=password, bg=bg_light, 
 entry_password.place(x=position_x+space_x, y=position_y+space_y*3, width=180, height=24)
 
 #lanel result
-label_result=tk.Label(mainpage, text="Result  ", bg=bg_deep, fg=fg_deep, font=label_font_config)
+label_result=tk.Label(mainpage, text="Log :", bg=bg_deep, fg=fg_deep, font=label_font_config)
 label_result.place(x=position_x, y=position_y+space_y*4, height=30)
 #scrolledtext result
 result_st=scrolledtext.ScrolledText(mainpage, padx=12, pady=10, bg=bg_light, fg=fg_deep, font=word_font_config)
@@ -109,13 +110,13 @@ def open_driver():
         driver1.close()
     else:
         result_st.configure(state='normal')
-        result_st.insert('end', "Invalid url, pls include http(s)\n\n")
+        result_st.insert('end', "Invalid url, remember to include http(s)\n\n")
         result_st.configure(state='disabled')
 #open driver button
 button_open_driver=tk.Button(mainpage, text="open driver", relief="flat", command=open_driver, bg=bg_middle, fg=fg_deep, font=label_font_config)
 button_open_driver.bind("<Enter>", lambda event: on_enter(event, button_open_driver))
 button_open_driver.bind("<Leave>", lambda event: on_leave(event, button_open_driver))
-button_open_driver.place(x=480, y=30, width=120, height=24)
+button_open_driver.place(x=540, y=30, width=120, height=50)
 
 #download
 def start_download():
@@ -127,7 +128,7 @@ def start_download():
 button_down=tk.Button(mainpage, text="Start Download", relief="flat", command=start_download, bg=bg_middle, fg=fg_deep, font=label_font_config)
 button_down.bind("<Enter>", lambda event: on_enter(event, button_down))
 button_down.bind("<Leave>", lambda event: on_leave(event, button_down))
-button_down.place(x=480, y=70, width=120, height=24)
+button_down.place(x=540, y=100, width=120, height=50)
 
 #========================================button & function========================================
 
