@@ -25,6 +25,10 @@ mainpage.resizable(False, False)
 
 webdriver_path = 'D:\\Drivers\\chromedriver.exe'
 
+#url info
+first_page = "https://www.twitch.tv/"
+second_page = "https://www.twitch.tv/franchiseglobalart"
+
 #pos info
 position_x = 50
 position_y = 20
@@ -41,7 +45,7 @@ label_url.place(x=position_x, y=position_y, width=150, height=24)
 url=tk.StringVar()
 entry_url=tk.Entry(mainpage, textvariable=url, bg=bg_light, fg=fg_deep, font=word_font_config)
 entry_url.place(x=position_x+space_x, y=position_y, width=180, height=24)
-entry_url.insert(0, "https://www.twitch.tv/")
+entry_url.insert(0, first_page)
 
 #label file location
 label_file_location=tk.Label(mainpage, text="Choose save location  ", anchor="e", bg=bg_deep, fg=fg_deep, font=label_font_config)
@@ -104,6 +108,7 @@ def open_driver():
         result_st.configure(state='normal')
         result_st.insert('end', "Connecting \""+url.get()+"\"\n\n")
         #open driver
+        global driver1 
         driver1 = webdriver.Chrome(executable_path=webdriver_path)
         driver1.get(url.get())
         result_st.insert('end', "successfully open web driver\n\n")
@@ -169,6 +174,17 @@ button_open_driver.bind("<Enter>", lambda event: on_enter(event, button_open_dri
 button_open_driver.bind("<Leave>", lambda event: on_leave(event, button_open_driver))
 button_open_driver.place(x=540, y=30, width=120, height=50)
 
+#claim bonus func
+def claim_bonus():
+    global driver1
+    driver1.get(second_page)
+
+#claim bonus button
+button_claim=tk.Button(mainpage, text="claim bonus!", command=claim_bonus, bg=bg_middle, fg=fg_deep, font=label_font_config)
+button_claim.bind("<Enter>", lambda event: on_enter(event, button_claim))
+button_claim.bind("<Leave>", lambda event: on_leave(event, button_claim))
+button_claim.place(x=540, y=110, width=120, height=50)
+"""
 #download
 def start_download():
     result_st.configure(state='normal')
@@ -180,6 +196,6 @@ button_down=tk.Button(mainpage, text="Start Download", command=start_download, b
 button_down.bind("<Enter>", lambda event: on_enter(event, button_down))
 button_down.bind("<Leave>", lambda event: on_leave(event, button_down))
 button_down.place(x=540, y=100, width=120, height=50)
-
+"""
 #========================================button & function========================================
 mainpage.mainloop()
