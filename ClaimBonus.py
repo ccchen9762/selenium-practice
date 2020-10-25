@@ -20,7 +20,7 @@ fg_deep = "#FCFCFC"
 
 #main page info
 mainpage=tk.Tk()
-mainpage.title("DownPic")
+mainpage.title("claim script")
 mainpage.geometry("800x600+640+160")
 mainpage.configure(bg=bg_deep)
 mainpage.resizable(False, False)
